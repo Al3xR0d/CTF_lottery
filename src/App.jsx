@@ -40,7 +40,7 @@ export default function App() {
   };
 
   const handleReset = () => {
-    setNumbers(Array.from({ length: 15 }, (_, i) => i + 1));
+    setNumbers(Array.from({ length: 14 }, (_, i) => i + 1));
     setCurrent(null);
     setDisplayedNumber(null);
     setIsSpinning(false);
