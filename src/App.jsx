@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MatrixBackground from "./components/MatrixBackground";
 
 export default function App() {
-  const [numbers, setNumbers] = useState(Array.from({ length: 14 }, (_, i) => i + 1));
+  const [numbers, setNumbers] = useState(Array.from({ length: 13 }, (_, i) => i + 1));
   const [current, setCurrent] = useState(null);
   const [displayedNumber, setDisplayedNumber] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -28,7 +28,7 @@ export default function App() {
 
     const spinInterval = setInterval(() => {
       if (spinCount < maxSpins) {
-        const randomNum = Math.floor(Math.random() * 14) + 1;
+        const randomNum = Math.floor(Math.random() * 13) + 1;
         setDisplayedNumber(randomNum);
         spinCount++;
       } else {
@@ -40,7 +40,7 @@ export default function App() {
   };
 
   const handleReset = () => {
-    setNumbers(Array.from({ length: 14 }, (_, i) => i + 1));
+    setNumbers(Array.from({ length: 13 }, (_, i) => i + 1));
     setCurrent(null);
     setDisplayedNumber(null);
     setIsSpinning(false);
