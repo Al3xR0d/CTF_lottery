@@ -32,7 +32,8 @@ export default function App() {
       const delta = timestamp - lastTime;
 
       if (delta > 70) {
-        const randomNum = Math.floor(Math.random() * 15) + 1;
+        const spinNumbers = numbers.length > 0 ? numbers : Array.from({ length: 15 }, (_, i) => i + 1);
+        const randomNum = spinNumbers[Math.floor(Math.random() * spinNumbers.length)];
         setDisplayedNumber(randomNum);
         spinCount++;
         lastTime = timestamp;
