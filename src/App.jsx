@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MatrixBackground from "./components/MatrixBackground";
 
 export default function App() {
-  const [numbers, setNumbers] = useState(Array.from({ length: 13 }, (_, i) => i + 1));
+  const [numbers, setNumbers] = useState(Array.from({ length: 15 }, (_, i) => i + 1));
   const [current, setCurrent] = useState(null);
   const [displayedNumber, setDisplayedNumber] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -25,22 +25,32 @@ export default function App() {
     setIsSpinning(true);
     let spinCount = 0;
     const maxSpins = 20;
+    let lastTime = 0;
 
-    const spinInterval = setInterval(() => {
-      if (spinCount < maxSpins) {
-        const randomNum = Math.floor(Math.random() * 13) + 1;
+    const spin = (timestamp) => {
+      if (!lastTime) lastTime = timestamp;
+      const delta = timestamp - lastTime;
+
+      if (delta > 70) {
+        const randomNum = Math.floor(Math.random() * 15) + 1;
         setDisplayedNumber(randomNum);
         spinCount++;
+        lastTime = timestamp;
+      }
+
+      if (spinCount < maxSpins) {
+        requestAnimationFrame(spin);
       } else {
-        clearInterval(spinInterval);
         setDisplayedNumber(finalNumber);
         setIsSpinning(false);
       }
-    }, 50 + (spinCount * 10));
+    };
+
+    requestAnimationFrame(spin);
   };
 
   const handleReset = () => {
-    setNumbers(Array.from({ length: 13 }, (_, i) => i + 1));
+    setNumbers(Array.from({ length: 15 }, (_, i) => i + 1));
     setCurrent(null);
     setDisplayedNumber(null);
     setIsSpinning(false);
@@ -56,28 +66,34 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [numbers]);
 
+  useEffect(() => {
+    if (displayedNumber !== null) {
+      document.body.style.webkitTransform = "translateZ(0)";
+      setTimeout(() => (document.body.style.webkitTransform = ""), 0);
+    }
+  }, [displayedNumber]);
+
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen text-green-400">
       <MatrixBackground />
-      <h1 className="text-4xl mb-8 neon z-10">CTF Жеребьевка</h1>
+      <h1 className="text-4xl mb-8 neon z-10">Жеребьевка</h1>
 
       <div className="h-40 flex items-center justify-center z-10">
         <AnimatePresence mode="wait">
           {displayedNumber !== null && (
             <motion.div
               key={displayedNumber}
-              initial={{ y: 50, opacity: 0, filter: "blur(5px)" }}
+              initial={{ y: 50, opacity: 0, scale: 0.9 }}
               animate={{
                 y: 0,
                 opacity: 1,
-                filter: isSpinning ? "blur(3px)" : "blur(0px)",
-                textShadow: "0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 30px #39ff14",
+                scale: isSpinning ? 1.1 : 1,
               }}
-              exit={{ y: -50, opacity: 0, filter: "blur(5px)" }}
-              transition={{ duration: 0.2, ease: "linear" }}
+              exit={{ y: -50, opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
               className="text-8xl font-mono neon-matrix glitch"
             >
-              {typeof displayedNumber === "number" ? displayedNumber : displayedNumber}
+              {displayedNumber}
             </motion.div>
           )}
         </AnimatePresence>
